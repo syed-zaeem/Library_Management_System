@@ -1,0 +1,32 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore log files and error reports
+npm-debug.log
+yarn-error.log
+*.log
+
+# Ignore environment-specific configuration files
+.env
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore user-specific files
+.npmrc
+.npmignore
+.editorconfig
+.eslintcache
+.localhistory
+
+# Ignore IDE or code editor settings
+.vscode/
+.idea/
+
+# Ignore build output
+/build/
+
+# Ignore optional package manager files
+package-lock.json
+yarn.lock
