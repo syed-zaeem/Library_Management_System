@@ -18,21 +18,19 @@ authenticate = (req, res, next) => {
   });
 };
 
-authorize = (requiredRoles) => {
-  return (req, res, next) => {
+authorize = (req, res, next) => {
     const user = req.user;
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized: User is missing' });
     }
-    if (requiredRoles.includes(user.role)) {
+    if (user.role == 'admin') {
       next();
     } else {
-      res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
   };
-};
 
-customerAccessOwnData = (req, res, next) => {
+userAccessOwnData = (req, res, next) => {
   const userId = req.user.userId;
   const requestedUserId = req.params.id;
   console.log(userId, requestedUserId)
@@ -46,14 +44,14 @@ customerAccessOwnData = (req, res, next) => {
 };
 
 
-addCustomerRole = (req, res, next) => {
-  req.body.role = 'customer';
+addUserRole = (req, res, next) => {
+  req.body.role = 'user';
   next();
 };
 
 module.exports = {
     authenticate,
     authorize,
-    customerAccessOwnData,
-    addCustomerRole
+    userAccessOwnData,
+    addUserRole
 }
