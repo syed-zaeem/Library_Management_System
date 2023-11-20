@@ -111,11 +111,34 @@ const bookController = {
       res.status(500).json({ message: error.message });
     }
   },
-  //TODO 
+  getAllBooks: async (req, res) => {
+    try {
+      const allBooks = await bookService.getAllBooks();
+      res.status(200).json(allBooks);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 
-  //get all books
-  //get allocated/returnable/donated books of a user
-  //delete a book
+  getBooksByStatusAndUserId: async (req, res) => {
+    try {
+      const { status, userId } = req.params;
+      const books = await bookService.getBooksByStatusAndUserId(status, userId);
+      res.status(200).json(books);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  deleteBook: async (req, res) => {
+    try {
+      const { bookId } = req.params;
+      const deletedBook = await bookService.deleteBook(bookId);
+      res.status(200).json({ message: 'Book deleted successfully', deletedBook });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 
   
 };

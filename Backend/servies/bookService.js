@@ -32,7 +32,29 @@ const bookService = {
       throw new Error(error.message);
     }
   },
+  getAllBooks: async () => {
+    try {
+      return await Book.find({});
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 
+  getBooksByStatusAndUserId: async (status, userId) => {
+    try {
+      return await Book.find({ status, 'user.id': userId });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  deleteBook: async (bookId) => {
+    try {
+      return await Book.findByIdAndDelete(bookId);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = bookService;
