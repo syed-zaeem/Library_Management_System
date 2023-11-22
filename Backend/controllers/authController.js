@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
 const misc = require('../utils/misc')
 require('dotenv').config({ path: '../.env' });
