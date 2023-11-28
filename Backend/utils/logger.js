@@ -14,26 +14,4 @@ const logException = async (fileName, functionName, exceptionMessage) => {
         console.error('Error logging exception:', error.message);
     }
 };
-
-const logUserAction = async (user, oldData, operation) => {
-    try {
-        userID = user._id
-        newData = JSON.stringify(user)
-        const auditLogUser = new AuditLogUser({
-            userID,
-            operation,
-            oldData,
-            newData,
-            
-        });
-        await auditLogUser.save();
-    } catch (error) {
-        await logException('logger', 'logUserAction', error.message);
-        console.error('Error logging user action:', error.message);
-    }
-};
-
-module.exports = {
-    logUserAction,
-    logException,
-};
+module.exports = logException

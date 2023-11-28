@@ -1,53 +1,62 @@
 const User = require('../models/User');
 const logger = require('../utils/logger');
-const misc = require('../utils/misc')
+const misc = require('../utils/misc');
+const logException = require('../utils/logger'); // Import your exception logging function here
 require('dotenv').config({ path: '../.env' });
 
 const authController = {
-signup : async (req, res) => {
+  signup: async (req, res) => {
     try {
-        const { name, email, password, userType } = req.body;
-        const existingUser = await User.findOne({ email });
+      const { name, email, password, role } = req.body;
+      const existingUser = await User.findOne({ email });
 
-        if (existingUser) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
+      if (existingUser) {
+        return res.status(400).json({ message: 'User already exists' });
+      }
 
-        const user = new User({
-            name,
-            email,
-            password,
-            userType
-        });
+      const user = new User({
+        name,
+        email,
+        password,
+        role,
+      });
 
-        await user.save();
-
-        logger.logUserAction(user, '', 'create')
-        const token = misc.generateToken(user._id, user.userType)
-        res.status(201).json({ user, token });
+      await user.save();
+      const token = misc.generateToken(user._id, user.role);
+      res.status(201).json({ user, token });
     } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-},
+      // Log the exception
+      logException('authController.js', 'signup', error.message);
 
-login : async (req, res) => {
+      // Send response
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  login: async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+      const { email, password } = req.body;
+      const user = await User.findOne({ email });
 
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
 
-        if (password != user.password) {
-            return res.status(401).json({ message: 'Invalid password' });
-        }
+      if (password !== user.password) {
+        return res.status(401).json({ message: 'Invalid password' });
+      }
 
-        const token = misc.generateToken(user._id, user.userType)
-        res.status(200).json({ user, token });
+      const token = misc.generateToken(user._id, user.role);
+      res.status(200).json({ user, token });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      // Log the exception
+      console.log(arguments.callee.name)
+      logException('authController.js', 'login', error.message);
+
+      // Send response
+      res.status(500).json({ message: error.message });
     }
-}
-}
-module.exports = authController
+  },
+};
+
+module.exports = authController;

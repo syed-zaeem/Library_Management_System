@@ -1,10 +1,11 @@
-const Transaction = require('../models/transactionModel');
+const Transaction = require('../models/Transaction');
 
 const transactionService = {
   createTransaction: async (userID, bookID, transactionType) => {
     try {
       return await Transaction.create({ userID, bookID, transactionType });
     } catch (error) {
+      console.log('1')
       throw new Error(error.message);
     }
   },
@@ -45,13 +46,15 @@ const transactionService = {
     }
   },
 
-  getTransactionsByUserAndBook: async (userID, bookID) => {
+  getActiveTransactionsByTypeAndUser: async (userID, transactionType) => {
     try {
-      return await Transaction.find({ userID, bookID });
+      return await Transaction.find({ userID, transactionType, active: true });
     } catch (error) {
       throw new Error(error.message);
     }
   },
+
+  
 };
 
 module.exports = transactionService;

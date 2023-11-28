@@ -11,7 +11,7 @@ authenticate = (req, res, next) => {
   const tokenString = token.replace('Bearer ', '');
   jwt.verify(tokenString, process.env.SECRET_KEY, (err, user) => {
     if (err) {
-      return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+      return res.status(401).json({ message: 'Unauthorized: Invalid or no token' });
     }
     req.user = user;
     next();

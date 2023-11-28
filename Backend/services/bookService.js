@@ -40,17 +40,24 @@ const bookService = {
     }
   },
 
-  getBooksByStatusAndUserId: async (status, userId) => {
+  deleteBook: async (bookId) => {
     try {
-      return await Book.find({ status, 'user.id': userId });
+      const deletedBook = await Book.findByIdAndUpdate(
+        bookId,
+        { $set: { isActive: false } }, // Setting isActive to false for deletion
+        { new: true } // To return the updated document
+      );
+      return deletedBook;
     } catch (error) {
       throw new Error(error.message);
     }
   },
 
-  deleteBook: async (bookId) => {
+  getBooksByTransactionIds: async (transactionIds, isActive) => {
     try {
-      return await Book.findByIdAndDelete(bookId);
+      const books = await Book.find({
+        _id: { $in: transactionIds }      });
+      return books;
     } catch (error) {
       throw new Error(error.message);
     }

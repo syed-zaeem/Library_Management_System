@@ -1,4 +1,5 @@
-const User = require('./userModel'); // Assuming this is your Mongoose User model
+const User = require('../models/User'); // Assuming this is your Mongoose User model
+const logException = require('../utils/logger'); // Import your exception logging function here
 
 const userController = {
   getAllActiveUsers: async (req, res) => {
@@ -6,6 +7,8 @@ const userController = {
       const activeUsers = await User.find({ active: true });
       res.json(activeUsers);
     } catch (error) {
+      logException('userController.js', 'getAllActiveUsers', error.message);
+
       res.status(500).json({ message: error.message });
     }
   },
@@ -13,18 +16,24 @@ const userController = {
   updateUser: async (req, res) => {
     try {
       const { id } = req.params;
-      const { email } = req.body;
-
+      const { name, email, password } = req.body;
+  
       // Check if the updated email exists for another user
       const existingUserWithEmail = await User.findOne({ email, _id: { $ne: id } });
       if (existingUserWithEmail) {
         return res.status(400).json({ message: 'Email already exists for another user' });
       }
-
-      // If the email is unique, proceed with the update
-      const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
-      res(200).json(updatedUser);
+  
+      // Create an object with fields to update (excluding 'role')
+      const updatedFields = { name, email, password };
+  
+      // Update the user, explicitly excluding the 'role' field
+      const updatedUser = await User.findByIdAndUpdate(id, updatedFields, { new: true });
+  
+      res.status(200).json(updatedUser);
     } catch (error) {
+      logException('userController.js', 'updateUser', error.message);
+
       res.status(500).json({ message: error.message });
     }
   },
@@ -35,6 +44,8 @@ const userController = {
       const deletedUser = await User.findByIdAndUpdate(id, { active: false }, { new: true });
       res.status(200).json(deletedUser);
     } catch (error) {
+      logException('userController.js', 'softDeleteUser', error.message);
+
       res.status(500).json({ message: error.message });
     }
   },
@@ -45,6 +56,8 @@ const userController = {
       const user = await User.findById(id);
       res.status(200).json(user);
     } catch (error) {
+      logException('userController.js', 'getUserById', error.message);
+
       res.status(500).json({ message: error.message });
     }
   },

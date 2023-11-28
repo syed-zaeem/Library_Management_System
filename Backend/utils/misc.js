@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: '../.env' });
 
-function generateToken(userId, userType) {
-  const payload = { userId, userType };
+function generateToken(userId, role) {
+  const payload = { userId, role };
   const secretKey = process.env.SECRET_KEY;
   const expiresIn = '8h';
 
