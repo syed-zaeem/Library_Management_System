@@ -24,6 +24,13 @@ const bookService = {
       throw new Error(error.message);
     }
   },
+  getBookById: async (id) => {
+    try {
+      return await Book.find({_id: id});
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 
   getBooksByUserIdAndStatus: async (userId, status) => {
     try {
@@ -34,7 +41,7 @@ const bookService = {
   },
   getAllBooks: async () => {
     try {
-      return await Book.find({});
+      return await Book.find({active: true});
     } catch (error) {
       throw new Error(error.message);
     }
@@ -53,7 +60,7 @@ const bookService = {
     }
   },
 
-  getBooksByTransactionIds: async (transactionIds, isActive) => {
+  getBooksByTransactionIds: async (transactionIds) => {
     try {
       const books = await Book.find({
         _id: { $in: transactionIds }      });

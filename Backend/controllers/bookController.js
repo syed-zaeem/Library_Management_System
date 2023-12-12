@@ -22,11 +22,12 @@ const bookController = {
 
   requestToAllocate: async (req, res) => {
     try {
-      const { bookId } = req.body;
-
+      const bookID = req.body.bookId;
+      userID = req.user.userId;
+      console.log(bookId, userID)
       const newTransaction = await transactionService.createTransaction(
-        req.user.userId,
-        bookId,
+        userID,
+        bookID,
         'Request to Allocate'
       );
 
@@ -134,7 +135,17 @@ const bookController = {
       res.status(500).json({ message: error.message });
     }
   },
+  getBookById: async (req, res) => {
+    id = req.bookId
+    try {
+      const book = await bookService.getBookById(id);
+      res.status(200).json(book);
+    } catch (error) {
+      logException('bookController.js', 'getBookById', error.message);
 
+      res.status(500).json({ message: error.message });
+    }
+  },
   deleteBook: async (req, res) => {
     try {
       const { bookId } = req.params;
@@ -146,62 +157,6 @@ const bookController = {
       res.status(500).json({ message: error.message });
     }
   },
-
-  getAllDonatedBooks: async (req, res) => {
-    try {
-      const userId = req.user.userId; // Assuming you have user ID in req.user.userId
-      
-      // Fetch transactions related to 'Request to Donate' for the user
-      const donatedTransactions = await transactionService.getActiveTransactionsByTypeAndUser(userId, 'Request to Donate');
-      
-      // Filter books associated with these transactions that are currently active
-      const donatedBooks = await bookService.getBooksByTransactionIds(
-        donatedTransactions.map(transaction => transaction.bookId)      );
-
-      res.status(200).json(donatedBooks);
-    } catch (error) {
-      logException('bookController.js', 'getALlDonatedBooks', error.message);
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  getAllAllocatedBooks: async (req, res) => {
-    try {
-      const userId = req.user.userId; // Assuming you have user ID in req.user.userId
-      
-      // Fetch transactions related to 'Request to Allocate' for the user
-      const allocatedTransactions = await transactionService.getActiveTransactionsByTypeAndUser(userId, 'Request to Allocate');
-      
-      // Filter books associated with these transactions that are currently inactive
-      const allocatedBooks = await bookService.getBooksByTransactionIds(
-        allocatedTransactions.map(transaction => transaction.bookId)      );
-
-      res.status(200).json(allocatedBooks);
-    } catch (error) {
-      logException('bookController.js', 'getAllAllocatedBooks', error.message);
-
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  getAllReturnableBooks: async (req, res) => {
-    try {
-      const userId = req.user.userId; // Assuming you have user ID in req.user.userId
-      
-      // Fetch transactions related to 'Request to Return' for the user
-      const returnableTransactions = await transactionService.getTransactionsByType(userId, 'Request to Return');
-      
-      // Filter books associated with these transactions that are currently active
-      const returnableBooks = await bookService.getBooksByTransactionIds(
-        returnableTransactions.map(transaction => transaction.bookId)      );
-
-      res.status(200).json(returnableBooks);
-    } catch (error) {
-      logException('bookController.js', 'getAllReturnableBooks', error.message);
-
-      res.status(500).json({ message: error.message });
-    }
-  }
 };
 
 module.exports = bookController;

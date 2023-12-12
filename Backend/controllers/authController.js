@@ -50,10 +50,28 @@ const authController = {
       res.status(200).json({ user, token });
     } catch (error) {
       // Log the exception
-      console.log(arguments.callee.name)
       logException('authController.js', 'login', error.message);
 
       // Send response
+      res.status(500).json({ message: error.message });
+    }
+  },
+  verify: async (req, res) => {
+    try {
+      const userData = req.user
+      const user = await User.findById(userData.userId);
+
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.status(200).json({ user });
+    } catch (error) {
+      // Log the exception
+      logException('authController.js', 'verify', error.message);
+
+      // Send response
+      console.log(error)
       res.status(500).json({ message: error.message });
     }
   },

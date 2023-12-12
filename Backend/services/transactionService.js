@@ -2,6 +2,8 @@ const Transaction = require('../models/Transaction');
 
 const transactionService = {
   createTransaction: async (userID, bookID, transactionType) => {
+    console.log(userID, bookID, transactionType)
+
     try {
       return await Transaction.create({ userID, bookID, transactionType });
     } catch (error) {
@@ -49,6 +51,14 @@ const transactionService = {
   getActiveTransactionsByTypeAndUser: async (userID, transactionType) => {
     try {
       return await Transaction.find({ userID, transactionType, active: true });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getActiveTransactionsByType: async (transactionType) => {
+    try {
+      return await Transaction.find({transactionType, active: true });
     } catch (error) {
       throw new Error(error.message);
     }

@@ -31,4 +31,5 @@ transactionSchema.pre('findOneAndUpdate', async function (next) {
   next();
 });
 
+
 module.exports = mongoose.model('Transaction', transactionSchema);

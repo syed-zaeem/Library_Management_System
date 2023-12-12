@@ -19,7 +19,7 @@ bookSchema.pre('findOneAndUpdate', async function (next) {
   const oldData = JSON.stringify(book);
   const newData = JSON.stringify(this._update);
   await AuditLogBook.create({
-    bookID: this.getQuery()._id,
+    bookId: this.getQuery()._id,
     operation: 'update',
     oldData,
     newData,

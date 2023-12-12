@@ -12,11 +12,10 @@ router.put('/allocate/accept',authMiddleware.authenticate, authMiddleware.author
 router.put('/return/accept',authMiddleware.authenticate,authMiddleware.authorize, bookController.acceptRequestToReturn);
 
 router.get('/',authMiddleware.authenticate, bookController.getAllBooks);
+router.get('/:bookId',authMiddleware.authenticate, bookController.getBookById);
 
 router.delete('/:bookId',authMiddleware.authenticate, bookController.deleteBook);
 
-router.get('/donatedBooks',authMiddleware.authenticate, bookController.getAllDonatedBooks);
-router.get('/allocatedBooks',authMiddleware.authenticate, bookController.getAllAllocatedBooks);
-router.get('/returnableBooks',authMiddleware.authenticate, bookController.getAllReturnableBooks);
+
 
 module.exports = router;
